@@ -4,28 +4,16 @@ Files included here are R scripts and include all portions of data cleaning, wra
 
 1. clean_test_data.R - this cleans up the test data and imputes missing ethnicity data (just one imputation at the moment - can do pooled analysis across multiple imputations later if needed).  It outputs a clean dataset of record level data into other_data. If we can all use this (and agree any analysis designs - e.g person id variable) - that will ensure consistency. 
 
-2. spatial_models_XXXX.R
+2. spatial_models_XXXX.R - Script for running the spatial models (BYM model) for ecological (LSOA) analyses. The ‘XXXX’ bit refers to the specific outcome of interest (e.g. uptake - number of people who got a test, multiple_lfts - number of people who got more than 1 test, and positivity - 
 
-Script for running the spatial models (BYM model) for ecological (LSOA) analyses. The ‘XXXX’ bit refers to the specific outcome of interest (e.g. uptake - number of people who got a test, multiple_lfts - number of people who got more than 1 test, and positivity - 
+3. tidy_analytical_XXXX.R - Series of scripts that tidy and clean datasets based on Ben’s previous code to create the LSOA level analytical dataset which includes - counts for each outcome, expected counts by age, sex and ethnicity, and matched socioeconomic data from Ben’s scrips. The XXXX bit relates to what the specific outcome is. Scripts are called within the spatial model scripts.
 
-3. tidy_analytical_XXXX.R
+4. summary_plots.R - Script creates summary statistics and graphs to be included in the paper.
 
-Series of scripts that tidy and clean datasets based on Ben’s previous code to create the LSOA level analytical dataset which includes - counts for each outcome, expected counts by age, sex and ethnicity, and matched socioeconomic data from Ben’s scrips. The XXXX bit relates to what the specific outcome is. Scripts are called within the spatial model scripts.
+5. calculate_descriptives.R - Script creates a table of summary statistics for each outcome, that is presented in the paper (see Table 1 and Appendix B).
 
-4. summary_plots.R
+6. Test_descriptives.R - Creates a table for summary statistics by numbers of tests (rather than persons)
 
-Script creates summary statistics and graphs to be included in the paper.
-
-5. calculate_descriptives.R
-
-Script creates a table of summary statistics for each outcome, that is presented in the paper (see Table 1 and Appendix B).
-
-6. Test_descriptives.R
-
-Creates a table for summary statistics by numbers of tests (rather than persons)
-
-7. multi_level_models.R
-
-Cleans individual/record level data and analyses in multi-level model for Sensitivity Analyses in the paper (only possible for multiple tests and positivity). 
+7. multi_level_models.R - Cleans individual/record level data and analyses in multi-level model for Sensitivity Analyses in the paper (only possible for multiple tests and positivity). 
 
 In terms of workflow, clean_test_data.R was run first to process the raw data. Then the 'spatial_models' files were run individually, which each clean files further and run all analyses including descriptives and Bayesian analytical models (the scripts call the 'descriptives' and 'tidy' files within them). Summary_plots.R was used for creating additional plots for the paper. Finally, multi_level_models.R were used for sensitivity analyses.
