@@ -9,6 +9,10 @@ pop<-pop[ladcd=="E08000012"] # Subset Liverpool
 load(normalizePath("other_data/lsoa_risk.RData")) # Load
 ag_risk_lsoa$prop_students <- ag_risk_lsoa$prop_students / 100 # Variable is percentage, so convert to proportion for consistency
 ag_risk_lsoa$ch_prop <- ag_risk_lsoa$ch_prop / 100 # Same for care home beds
+# Recode ch_prop as binary (care home in LSOA)
+ag_risk_lsoa$ch_binary <- NA
+ag_risk_lsoa$ch_binary[ag_risk_lsoa$ch_prop == 0] <- 0
+ag_risk_lsoa$ch_binary[ag_risk_lsoa$ch_prop > 0] <- 1
 ag_risk_lsoa$grp_label <- as.factor(ag_risk_lsoa$grp_label) # To define as factor
 ag_risk_lsoa$grp_label <- relevel(ag_risk_lsoa$grp_label, ref = "e-Veterans") # Set reference group
 # Accessibility data
