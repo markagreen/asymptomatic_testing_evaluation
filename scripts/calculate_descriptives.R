@@ -19,9 +19,16 @@ hold <- as.data.frame(table(lft_tests$eth_group_imp)) # Repeat for ethnicity
 hold$Pop <- c(19403, 12308, 11756, 8277, 414671) # Asian, Black, Mixed, Other, White
 table1 <- rbind(table1, hold)
 
-# Repeat for IMD quintile
-hold <- lsoa_lft_all[, list(Freq = sum(lft, na.rm=T), Pop = sum(total_pop, na.rm=T)), by = "eng_quint_imd"] # Aggregate tests and pop by quintile
+# Repeat for IMD quintile - Liverpool
+hold <- lsoa_lft_all[, list(Freq = sum(lft, na.rm=T), Pop = sum(total_pop, na.rm=T)), by = "quint_imd"] # Aggregate tests and pop by Liverpool quintile
+names(hold)[names(hold) == "quint_imd"] <- "Var1" # Rename
+hold$Var1 <- paste("Liv_quintile_", as.character(hold$Var1)) # Rename to make clear
+table1 <- rbind(table1, hold)
+
+# Repeat for IMD quintile - England
+hold <- lsoa_lft_all[, list(Freq = sum(lft, na.rm=T), Pop = sum(total_pop, na.rm=T)), by = "eng_quint_imd"] # Aggregate tests and pop by England quintile
 names(hold)[names(hold) == "eng_quint_imd"] <- "Var1" # Rename
+hold$Var1 <- paste("Eng_quintile_", as.character(hold$Var1)) # Rename to make clear
 table1 <- rbind(table1, hold)
 
 # Calculate percentages
@@ -48,9 +55,16 @@ hold <- as.data.frame(table(lft_tests_pilot$eth_group_imp)) # Repeat for ethnici
 hold$Pop <- c(19403, 12308, 11756, 8277, 414671) # Asian, Black, Mixed, Other, White
 table2 <- rbind(table2, hold)
 
-# Repeat for IMD quintile
-hold <- lsoa_lft_pilot[, list(Freq = sum(lft, na.rm=T), Pop = sum(total_pop, na.rm=T)), by = "eng_quint_imd"] # Aggregate tests and pop by quintile
+# Repeat for IMD quintile - Liverpool
+hold <- lsoa_lft_pilot[, list(Freq = sum(lft, na.rm=T), Pop = sum(total_pop, na.rm=T)), by = "quint_imd"] # Aggregate tests and pop by Liverpool quintile
+names(hold)[names(hold) == "quint_imd"] <- "Var1" # Rename
+hold$Var1 <- paste("Liv_quintile_", as.character(hold$Var1)) # Rename to make clear
+table2 <- rbind(table2, hold)
+
+# Repeat for IMD quintile - England
+hold <- lsoa_lft_pilot[, list(Freq = sum(lft, na.rm=T), Pop = sum(total_pop, na.rm=T)), by = "eng_quint_imd"] # Aggregate tests and pop by England quintile
 names(hold)[names(hold) == "eng_quint_imd"] <- "Var1" # Rename
+hold$Var1 <- paste("Eng_quintile_", as.character(hold$Var1)) # Rename to make clear
 table2 <- rbind(table2, hold)
 
 # Calculate percentages
@@ -77,9 +91,16 @@ hold <- as.data.frame(table(lft_tests_xmas$eth_group_imp)) # Repeat for ethnicit
 hold$Pop <- c(19403, 12308, 11756, 8277, 414671) # Asian, Black, Mixed, Other, White
 table3 <- rbind(table3, hold)
 
-# Repeat for IMD quintile
-hold <- lsoa_lft_xmas[, list(Freq = sum(lft, na.rm=T), Pop = sum(total_pop, na.rm=T)), by = "eng_quint_imd"] # Aggregate tests and pop by quintile
+# Repeat for IMD quintile - Liverpool
+hold <- lsoa_lft_xmas[, list(Freq = sum(lft, na.rm=T), Pop = sum(total_pop, na.rm=T)), by = "quint_imd"] # Aggregate tests and pop by Liverpool quintile
+names(hold)[names(hold) == "quint_imd"] <- "Var1" # Rename
+hold$Var1 <- paste("Liv_quintile_", as.character(hold$Var1)) # Rename to make clear
+table3 <- rbind(table3, hold)
+
+# Repeat for IMD quintile - England
+hold <- lsoa_lft_xmas[, list(Freq = sum(lft, na.rm=T), Pop = sum(total_pop, na.rm=T)), by = "eng_quint_imd"] # Aggregate tests and pop by England quintile
 names(hold)[names(hold) == "eng_quint_imd"] <- "Var1" # Rename
+hold$Var1 <- paste("Eng_quintile_", as.character(hold$Var1)) # Rename to make clear
 table3 <- rbind(table3, hold)
 
 # Calculate percentages
@@ -107,9 +128,16 @@ hold <- as.data.frame(table(lft_tests_lockdown$eth_group_imp)) # Repeat for ethn
 hold$Pop <- c(19403, 12308, 11756, 8277, 414671) # Asian, Black, Mixed, Other, White
 table4 <- rbind(table4, hold)
 
-# Repeat for IMD quintile
-hold <- lsoa_lft_lockdown[, list(Freq = sum(lft, na.rm=T), Pop = sum(total_pop, na.rm=T)), by = "eng_quint_imd"] # Aggregate tests and pop by quintile
+# Repeat for IMD quintile - Liverpool
+hold <- lsoa_lft_lockdown[, list(Freq = sum(lft, na.rm=T), Pop = sum(total_pop, na.rm=T)), by = "quint_imd"] # Aggregate tests and pop by Liverpool quintile
+names(hold)[names(hold) == "quint_imd"] <- "Var1" # Rename
+hold$Var1 <- paste("Liv_quintile_", as.character(hold$Var1)) # Rename to make clear
+table4 <- rbind(table4, hold)
+
+# Repeat for IMD quintile - England
+hold <- lsoa_lft_lockdown[, list(Freq = sum(lft, na.rm=T), Pop = sum(total_pop, na.rm=T)), by = "eng_quint_imd"] # Aggregate tests and pop by England quintile
 names(hold)[names(hold) == "eng_quint_imd"] <- "Var1" # Rename
+hold$Var1 <- paste("Eng_quintile_", as.character(hold$Var1)) # Rename to make clear
 table4 <- rbind(table4, hold)
 
 # Calculate percentages
