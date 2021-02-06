@@ -8,8 +8,11 @@ library(data.table)
 #  load clean test data
 load(normalizePath("other_data/clean_testing.Rdata"))
 
+# Drop all tests where age <= 5 (there should not be any, so assume erroneous data)
+testing <- testing[age>5]
+
 # Subset liverpool LA and positive lft tests
-lft_tests=testing[lft==1 & lad11cd=="E08000012"]
+lft_tests=testing[lft==1 & lad11cd=="E08000012" & t_date >= "2020-11-06 00:00:00" & t_date < "2021-02-01 00:00:00"]
 
 # Calculate age band
 lft_tests[, age_group:=cut(age, breaks = c(0,14,34,69,110), 
@@ -23,13 +26,13 @@ lft_tests[, age_group:=NULL]
 
 # Load IMD data
 load(normalizePath("other_data/lsoa_risk.RData")) # Load
-ag_risk_lsoa <- ag_risk_lsoa[,c("lsoa11", "eng_quint_imd", "ladcd")]
+ag_risk_lsoa <- ag_risk_lsoa[,c("lsoa11", "quint_imd", "eng_quint_imd", "ladcd")]
 lft_tests<-merge(lft_tests,ag_risk_lsoa[ladcd=="E08000012"], by="lsoa11", all.x=T) # Join onto main data
 
 # Subset data into time periods for analysis
 lft_tests_pilot <- lft_tests[lft_tests$t_date >= "2020-11-06 00:00:00" & lft_tests$t_date < "2020-12-03 00:00:00"] # Pilot period
 lft_tests_xmas <- lft_tests[lft_tests$t_date >= "2020-12-03 00:00:00" & lft_tests$t_date < "2021-01-06 00:00:00"] # Christmas period
-lft_tests_lockdown <- lft_tests[lft_tests$t_date >= "2021-01-06 00:00:00"] # Lockdown
+lft_tests_lockdown <- lft_tests[lft_tests$t_date >= "2021-01-06 00:00:00" & lft_tests$t_date < "2021-02-01 00:00:00"] # Lockdown
 
 ### Whole period ###
 
@@ -47,8 +50,14 @@ table1 <- rbind(table1, hold)
 hold <- as.data.frame(table(lft_tests$eth_group_imp)) # Repeat for ethnicity
 table1 <- rbind(table1, hold)
 
-# Repeat for IMD quintile
-hold <- as.data.frame(table(lft_tests$eng_quint_imd)) # Repeat for ethnicity
+# Repeat for IMD quintile - Liverpool
+hold <- as.data.frame(table(lft_tests$quint_imd)) # Repeat for Liverpool IMD
+hold$Var1 <- paste("Liv_quintile_", as.character(hold$Var1)) # Rename to make clear
+table1 <- rbind(table1, hold)
+
+# Repeat for IMD quintile - England
+hold <- as.data.frame(table(lft_tests$eng_quint_imd)) # Repeat for England IMD
+hold$Var1 <- paste("Eng_quintile_", as.character(hold$Var1)) # Rename to make clear
 table1 <- rbind(table1, hold)
 
 
@@ -69,9 +78,15 @@ table2 <- rbind(table2, hold)
 hold <- as.data.frame(table(lft_tests_pilot$eth_group_imp)) # Repeat for ethnicity
 table2 <- rbind(table2, hold)
 
-# Repeat for IMD quintile
-hold <- as.data.frame(table(lft_tests_pilot$eng_quint_imd)) # Repeat for ethnicity
-table1 <- rbind(table1, hold)
+# Repeat for IMD quintile - Liverpool
+hold <- as.data.frame(table(lft_tests_pilot$quint_imd)) # Repeat for IMD Liverpool
+hold$Var1 <- paste("Liv_quintile_", as.character(hold$Var1)) # Rename to make clear
+table2 <- rbind(table2, hold)
+
+# Repeat for IMD quintile - England
+hold <- as.data.frame(table(lft_tests_pilot$eng_quint_imd)) # Repeat IMD England
+hold$Var1 <- paste("Eng_quintile_", as.character(hold$Var1)) # Rename to make clear
+table2 <- rbind(table2, hold)
 
 
 ### Christmas ###
@@ -90,9 +105,15 @@ table3 <- rbind(table3, hold)
 hold <- as.data.frame(table(lft_tests_xmas$eth_group_imp)) # Repeat for ethnicity
 table3 <- rbind(table3, hold)
 
-# Repeat for IMD quintile
-hold <- as.data.frame(table(lft_tests_xmas$eng_quint_imd)) # Repeat for ethnicity
-table1 <- rbind(table1, hold)
+# Repeat for IMD quintile - Liverpool
+hold <- as.data.frame(table(lft_tests_xmas$quint_imd)) # Repeat for IMD Liverpool
+hold$Var1 <- paste("Liv_quintile_", as.character(hold$Var1)) # Rename to make clear
+table3 <- rbind(table3, hold)
+
+# Repeat for IMD quintile - England
+hold <- as.data.frame(table(lft_tests_xmas$eng_quint_imd)) # Repeat for IMD England
+hold$Var1 <- paste("Eng_quintile_", as.character(hold$Var1)) # Rename to make clear
+table3 <- rbind(table3, hold)
 
 
 
@@ -112,14 +133,21 @@ table4 <- rbind(table4, hold)
 hold <- as.data.frame(table(lft_tests_lockdown$eth_group_imp)) # Repeat for ethnicity
 table4 <- rbind(table4, hold)
 
-# Repeat for IMD quintile
-hold <- as.data.frame(table(lft_tests_lockdown$eng_quint_imd)) # Repeat for ethnicity
-table1 <- rbind(table1, hold)
+# Repeat for IMD quintile - Liverpool
+hold <- as.data.frame(table(lft_tests_lockdown$quint_imd)) # Repeat for Liverpool IMD
+hold$Var1 <- paste("Liv_quintile_", as.character(hold$Var1)) # Rename to make clear
+table4 <- rbind(table4, hold)
+
+# Repeat for IMD quintile - England
+hold <- as.data.frame(table(lft_tests_lockdown$eng_quint_imd)) # Repeat for England IMD
+hold$Var1 <- paste("Eng_quintile_", as.character(hold$Var1)) # Rename to make clear
+table4 <- rbind(table4, hold)
 
 
 ### Combine ###
 
 table1 <- rbind(table1, table2, table3, table4)
+table1
 rm(table2, table3, table4, hold)
 
 write.csv(table1, "./output/descriptives_by_tests.csv")
