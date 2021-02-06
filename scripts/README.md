@@ -16,4 +16,8 @@ Files included here are R scripts and include all portions of data cleaning, wra
 
 7. multi_level_models.R - Cleans individual/record level data and analyses in multi-level model for Sensitivity Analyses in the paper (only possible for multiple tests and positivity). 
 
-In terms of workflow, clean_test_data.R was run first to process the raw data. Then the 'spatial_models' files were run individually, which each clean files further and run all analyses including descriptives and Bayesian analytical models (the scripts call the 'descriptives' and 'tidy' files within them). Summary_plots.R was used for creating additional plots for the paper. Finally, multi_level_models.R were used for sensitivity analyses.
+8. create_reg_plots.R - Creates the summary plots for the spatial regression models (Figures 2-4).
+
+In terms of workflow, clean_test_data.R was run first to process the raw data. Then the 'spatial_models' files were run individually, which each clean files further and run all analyses including descriptives and Bayesian analytical models (the scripts call the 'descriptives' and 'tidy' files within them). Summary_plots.R and create_reg_plots.R were used for creating additional plots for the paper. Finally, multi_level_models.R were used for sensitivity analyses.
+
+We are unable to share data openly here due to the sensitive nature of the data. Data are accessible via CIPHA. Requests can be made to the Data Access Committee for extracts of the larger-scale data which cannot be released openly due to information governance requirements.
