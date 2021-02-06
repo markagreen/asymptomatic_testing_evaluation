@@ -12,15 +12,19 @@ library(plyr)
 library(ggplot2) # For visualisations
 library(patchwork)
 library(zoo) # For rolling average
+library(bit64) # For reasons unknown
 
 ### 1. Tidy data ####
 
 #  Load cleaned test data
-load(normalizePath("../other_data/clean_testing.Rdata"))
+load(normalizePath("./other_data/clean_testing.Rdata"))
+
+# Drop all tests where age <= 5 (there should not be any, so assume erroneous data)
+testing <- testing[age>5]
 
 # Subset dates
 testing$t_date <- ymd_hms(testing$t_date) # Convert to time-date
-testing <- testing[testing$t_date >= "2020-11-06 00:00:00",]
+testing <- testing[testing$t_date >= "2020-11-06 00:00:00" & testing$t_date < "2021-02-01 00:00:00",]
 testing$day <- as_date(testing$t_date) # Define day
 
 # Subset Liverpool Local Authority data
@@ -49,7 +53,7 @@ tests_day <- tests_day %>%
 # Figure 1
 
 # Add labels for plot 
-text_plot <- data.frame(text = c("Pilot begins", "Pilot ends", "Christmas", "Lockdown"), dates = as.Date(c("2020-11-06", "2020-12-03", "2020-12-25", "2021-01-05")), stringsAsFactors = FALSE)
+text_plot <- data.frame(text = c("Pilot begins", "Pilot ends", "Christmas", "National lockdown"), dates = as.Date(c("2020-11-06", "2020-12-03", "2020-12-25", "2021-01-05")), stringsAsFactors = FALSE)
 
 # Plot 1a
 p1a <- ggplot(tests_day[tests_day$test == "lft",], aes(x = day, y = total)) +
@@ -57,10 +61,11 @@ p1a <- ggplot(tests_day[tests_day$test == "lft",], aes(x = day, y = total)) +
   geom_line(aes(y=total_7day)) + # 7 day rolling average
   # geom_smooth() + # If want to have smoothed average instead of above
   geom_vline(mapping = aes(xintercept = dates), data = text_plot, show.legend = FALSE, linetype = "dotted") + # Add in dotted lines for periods (or try "dotted")
-  geom_text(mapping = aes(x = dates, y = 12500, label = text, hjust = -0.05, vjust = -0.5), data = text_plot) + # Add in text labels for period
+  geom_text(mapping = aes(x = dates, y = 13000, label = text, hjust = -0.05, vjust = -0.5), size = 3.4, data = text_plot) + # Add in text labels for period
   xlab("Date") +
   ylab("Total number of tests") +
   ylim(0,14000)
+p1a
 
 # Plot 1b
 p1b <- ggplot(tests_day[tests_day$test == "lft",], aes(x = day, y = positivity)) +
@@ -68,10 +73,11 @@ p1b <- ggplot(tests_day[tests_day$test == "lft",], aes(x = day, y = positivity))
   geom_line(aes(y=positivity_7day)) + # 7 day rolling average
   # geom_smooth() + # If want to have smoothed average instead of above
   geom_vline(mapping = aes(xintercept = dates), data = text_plot, show.legend = FALSE, linetype = "dotted") + # Add in dotted lines for periods (or try "dotted")
-  geom_text(mapping = aes(x = dates, y = 6, label = text, hjust = -0.05, vjust = -0.5), data = text_plot) + # Add in text labels for period
+  geom_text(mapping = aes(x = dates, y = 5, label = text, hjust = -0.05, vjust = -0.5), size = 3.4, data = text_plot) + # Add in text labels for period
   xlab("Date") +
-  ylab("Percentage of tests") +
-  ylim(0,6.5)
+  ylab("Percentage of tests positive") +
+  ylim(0,5.2)
+p1b
 
 # Join plots together
 fig1 <- p1a / p1b + # Have two plots, one on top of the other
@@ -79,8 +85,8 @@ fig1 <- p1a / p1b + # Have two plots, one on top of the other
 fig1 # Print
 
 # Save
-ggsave(plot = fig1, filename = "../output/trends_lft_highres.tiff", dpi = 300)
-ggsave(plot = fig1, filename = "../output/trends_lft_lowres.jpeg")
+ggsave(plot = fig1, filename = "./output/trends_lft_highres.tiff", dpi = 300)
+ggsave(plot = fig1, filename = "./output/trends_lft_lowres.jpeg")
 
 # # If want to create same plot but for LFTs and PCRs together (not in paper)
 # 
@@ -123,7 +129,7 @@ persons_data <- merge(persons_data, chars, by = "pid", all.x = TRUE) # Join onto
 rm(chars) # Save space
 
 # Create age group variable
-persons_data$age_band <- cut(persons_data$age, breaks=c(0, 10, 20, 30, 40, 50, 60, 70, 80, 200), right = FALSE)
+persons_data$age_band <- cut(persons_data$age, breaks=c(0, 10, 20, 30, 40, 50, 60, 70, 80, 200), right = FALSE) # Note all ages > 5 dropped so band 0-9 is really 6-9
 
 # Aggregate data
 agg_age <- persons_data[, list(Frequency = .N), by = c("test", "age_band")] # Aggregate
@@ -131,11 +137,11 @@ table_age <- spread(agg_age, test, Frequency) # Reshape data to wide format
 rm(agg_age, persons_data)
 
 # Recode the age bands for presentation purposes
-table_age$age_band <- revalue(table_age$age_band, c("[0,10)"="0-9", "[10,20)"="10-19", "[20,30)"="20-29", "[30,40)"="30-39", "[40,50)"="40-49", "[50,60)"="50-59", "[60,70)"="60-69", "[70,80)"="70-79", "[80,200)"="80+"))
+table_age$age_band <- revalue(table_age$age_band, c("[0,10)"="6-9", "[10,20)"="10-19", "[20,30)"="20-29", "[30,40)"="30-39", "[40,50)"="40-49", "[50,60)"="50-59", "[60,70)"="60-69", "[70,80)"="70-79", "[80,200)"="80+"))
 
 # Add in population counts (via 2019 mid year ONS population estimates)
 table_age$Population <- NA
-table_age$Population[table_age$age_band == "0-9"] <- 57608
+table_age$Population[table_age$age_band == "6-9"] <- 22250
 table_age$Population[table_age$age_band == "10-19"] <- 54662
 table_age$Population[table_age$age_band == "20-29"] <- 99315
 table_age$Population[table_age$age_band == "30-39"] <- 73312
@@ -193,15 +199,16 @@ plot_symp2 <- ggplot(symp_tests_day_wide[symp_tests_day_wide$test == "lft",], ae
   geom_point() +
   geom_line(aes(y=positive_7day)) + # 7 day rolling average
   geom_vline(mapping = aes(xintercept = dates), data = text_plot, show.legend = FALSE, linetype = "dotted") + # Add in dotted lines for periods (or try "dotted")
-  geom_text(mapping = aes(x = dates, y = 1.2, label = text, hjust = -0.05, vjust = -0.5), data = text_plot) + # Add in text labels for period
+  geom_text(mapping = aes(x = dates, y = 1, label = text, hjust = -0.05, vjust = -0.5), size = 3.5, data = text_plot) + # Add in text labels for period
   xlab("Date") +
   ylab("Percentage of tests") +
-  ylim(0,1.2)
+  ylim(0,1)
 plot_symp2 # Print
 
-ggsave(plot = plot_symp2, filename = "../output/trends_lft_symptoms_highres.tiff", dpi = 300)
-ggsave(plot = plot_symp2, filename = "../output/trends_lft_symptoms_lowres.jpeg")
+ggsave(plot = plot_symp2, filename = "./output/trends_lft_symptoms_highres.tiff", dpi = 300)
+ggsave(plot = plot_symp2, filename = "./output/trends_lft_symptoms_lowres.jpeg")
 
-# Summary statistics/
-sum(symp_tests_day_wide$`TRUE`[symp_tests_day_wide$test == "lft"], na.rm=T)
-sum(symp_tests_day_wide$total[symp_tests_day_wide$test == "lft"], na.rm=T)
+# Summary statistics
+sum(symp_tests_day_wide$`TRUE`[symp_tests_day_wide$test == "lft"], na.rm=T) # Total symptomatic LFTs
+sum(symp_tests_day_wide$total[symp_tests_day_wide$test == "lft"], na.rm=T) # Total LFTs
+(sum(symp_tests_day_wide$`TRUE`[symp_tests_day_wide$test == "lft"], na.rm=T) / sum(symp_tests_day_wide$total[symp_tests_day_wide$test == "lft"], na.rm=T)) * 100 # As %
