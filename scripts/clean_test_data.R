@@ -11,7 +11,7 @@ library(bit64)
 
 # Load data
 if (!file.exists(normalizePath("other_data/testing.Rdata"))) {
-testing <- fread("../13-01-21/COVIDPILLAR2_VCam_MastP2.txt") # All testing data
+testing <- fread("../01-02-21/COVIDPILLAR2_VCam_MastP2.txt") # All testing data
 save(testing,file=normalizePath("other_data/testing.Rdata"))
 }
 
@@ -20,11 +20,11 @@ save(testing,file=normalizePath("other_data/testing.Rdata"))
 #                  select = c("PseudoID", "TestRecordCreatedDate", "TestKit", "TestResultDesc", "Age", "Gender", "Ethnicity", "LLSOA2011", "LowerTierLocalAuthority", "CovidSymptomatic")) # nrows=1 only loads in first line
 
 load(normalizePath("./other_data/testing.Rdata"))
-#  fomat date as date format
+#  format date as date format
 testing[, t_date:=ymd_hms(TestRecordCreatedDate)]
 
 
-#  creat dummy for lft
+#  create dummy for lft
 testing[, lft:=as.numeric(tolower(TestKit)=="lft")]
 
 
@@ -58,8 +58,6 @@ mixed<-c(" black caribbean and white", "black african and white", "mixed or mult
 
 other<-c("another ethnic background", "another ethnic group", "any other ethnic category", "any other ethnic group", "arab")
 
-
-
 testing[grepl(paste(white, collapse="|"), Ethnicity)==T, eth_group:="white" ]
 testing[grepl(paste(black, collapse="|"), Ethnicity)==T, eth_group:="black" ]
 testing[grepl(paste(asian, collapse="|"), Ethnicity)==T, eth_group:="asian" ]
@@ -70,6 +68,7 @@ testing[grepl(paste(other, collapse="|"), Ethnicity)==T, eth_group:="other" ]
 table(testing[is.na(eth_group)==T]$Ethnicity, useNA = "ifany")
 
 with(testing, prop.table(table(eth_group, useNA = "ifany")))
+with(testing, table(eth_group, useNA = "ifany"))
 
 #  14% missing ?? 
 ## Calculate statistics for number of tests ##
@@ -111,6 +110,11 @@ testing[,eth_group:=as.character(factor(eth_group2, labels=levels(as.factor(test
 testing[, eth_group2:=NULL]
 # doesnt make any difference - does if using PseudoID
 with(testing, prop.table(table(eth_group, useNA = "ifany")))
+
+
+testing[, numtest_perpsid:=.N, by=.(PseudoID)]
+with(testing, table(numtest_perpsid, useNA="ifany"
+ ))
 
 #  Work status 86% missing
 # with(testing, prop.table(table(WorkStatus,useNA = "ifany" )))
