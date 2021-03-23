@@ -1,5 +1,5 @@
 # Evaluation of asymptomatic testing in Liverpool
-All R analytical code for the following paper:
+All R analytical code for the following paper ([preprint link](https://www.medrxiv.org/content/10.1101/2021.02.10.21251256v1):
 
 **Evaluating social and spatial inequalities of large scale rapid lateral flow SARS-CoV-2 antigen testing in COVID-19 management: An observational study of Liverpool, UK (November 2020 to January 2021)**
 
@@ -26,5 +26,3 @@ _Findings:_ 214 525 residents (43%) received a LFT identifying 5192 individuals 
 _Interpretation:_ Large-scale voluntary asymptomatic community testing saw social, ethnic, digital and spatial inequalities in uptake. COVID-19 testing and support to isolate need to be more accessible to the vulnerable communities most impacted by the pandemic, including non-digital means of access.
 
 _Funding:_ Department of Health and Social Care (UK) and Economic and Social Research Council).
-
-**Preprint:** https://www.medrxiv.org/content/10.1101/2021.02.10.21251256v1
