@@ -8,6 +8,7 @@
 library(data.table)
 library(spatialreg)
 library(ggplot2)
+library(viridis)
 library(spdep)
 library(INLA)
 library(sf)
@@ -96,13 +97,13 @@ model_data$upper <- model1$summary.fitted.values[, "0.975quant"]
 
 plot_m1 <- ggplot(model_data) + # Plot
   geom_sf(aes(fill = rr), lwd = 0) +
-  scale_fill_gradientn(colours = c("blue", "white", "red"), # Define colours to plot
-                       values = scales::rescale(c(0.2,0.9,1,1.1,3.8)), # Define values for colours
-                       limits = c(0.2, 3.8)) +
+  scale_fill_viridis(values = scales::rescale(c(0.2,0.9,1,1.1,3.8)), # Define values for colours
+                     limits = c(0.2, 3.8)) +
   labs(fill = "Relative Risk") +
   ggtitle("6th Nov-31st Jan") +
-  xlab("Longitude") +
-  ylab("Latitude")
+  #xlab("Longitude") +
+  #ylab("Latitude") +
+  theme_void() # Remove ggplot2 stuff as a map
 plot_m1
 
 # # If we want to plot the random effects
@@ -134,15 +135,14 @@ model_data$rr <- model2$summary.fitted.values[, "mean"] # Wrangle data
 
 plot_m2 <- ggplot(model_data) + # Plot
   geom_sf(aes(fill = rr), lwd = 0) +
-  scale_fill_gradientn(colours = c("blue", "white", "red"), # Define colours to plot
-                       values = scales::rescale(c(0.2,0.9,1,1.1,3.8)), # Define values for colours
-                       limits = c(0.2, 3.8)) +
+  scale_fill_viridis(values = scales::rescale(c(0.2,0.9,1,1.1,3.8)), # Define values for colours
+                     limits = c(0.2, 3.8)) +
   labs(fill = "Relative Risk") +
   ggtitle("6th Nov-2nd Dec") +
-  xlab("Longitude") +
-  ylab("Latitude")
+  #xlab("Longitude") +
+  #ylab("Latitude") +
+  theme_void() # Remove ggplot2 stuff as a map
 plot_m2
-
 
 ### 6. Model 3 - Tests over christmas (time period 2) ###
 
@@ -165,13 +165,13 @@ model_data$rr <- model3$summary.fitted.values[, "mean"] # Wrangle data
 
 plot_m3 <- ggplot(model_data) + # Plot
   geom_sf(aes(fill = rr), lwd = 0) +
-  scale_fill_gradientn(colours = c("blue", "white", "red"), # Define colours to plot
-                       values = scales::rescale(c(0.2,0.9,1,1.1,3.8)), # Define values for colours
-                       limits = c(0.2, 3.8)) +
+  scale_fill_viridis(values = scales::rescale(c(0.2,0.9,1,1.1,3.8)), # Define values for colours
+                     limits = c(0.2, 3.8)) +
   labs(fill = "Relative Risk") +
   ggtitle("3rd Dec-5th Jan") +
-  xlab("Longitude") +
-  ylab("Latitude")
+  #xlab("Longitude") +
+  #ylab("Latitude") +
+  theme_void() # Remove ggplot2 stuff as a map
 plot_m3
 
 
@@ -196,13 +196,13 @@ model_data$rr <- model4$summary.fitted.values[, "mean"] # Wrangle data
 
 plot_m4 <- ggplot(model_data) + # Plot
   geom_sf(aes(fill = rr), lwd = 0) +
-  scale_fill_gradientn(colours = c("blue", "white", "red"), # Define colours to plot
-                       values = scales::rescale(c(0.2,0.9,1,1.1,3.8)), # Define values for colours
-                       limits = c(0.2, 3.8)) +
+  scale_fill_viridis(values = scales::rescale(c(0.2,0.9,1,1.1,3.8)), # Define values for colours
+                     limits = c(0.2, 3.8)) +
   labs(fill = "Relative Risk") +
   ggtitle("6th-31st Jan") +
-  xlab("Longitude") +
-  ylab("Latitude")
+  #xlab("Longitude") +
+  #ylab("Latitude") +
+  theme_void() # Remove ggplot2 stuff as a map
 plot_m4
 
 
@@ -284,6 +284,7 @@ map
 
 ggsave(plot = map, filename = "./output/rr_maps_positivity_highres.tiff", dpi = 300)
 ggsave(plot = map, filename = "./output/rr_maps_positivity_lowres.jpeg")
+ggsave(plot = map, filename = "./output/rr_maps_positivity.svg")
 
 # Tidy
 rm(list=ls()) # Get rid of all data/objects
