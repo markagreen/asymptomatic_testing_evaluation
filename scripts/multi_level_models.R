@@ -72,17 +72,27 @@ lft_persons$grp_label <- relevel(lft_persons$grp_label, ref = "e-Veterans")
 lft_persons$zimd_score <- scale(lft_persons$imd_score, center = TRUE, scale = TRUE)
 lft_persons$zwalkDistAvg <- scale(lft_persons$walkDistAvg, center = TRUE, scale = TRUE)
 lft_persons$zprop_students <- scale(lft_persons$prop_students, center = TRUE, scale = TRUE)
+lft_persons$zage <- scale(lft_persons$age, center = TRUE, scale = TRUE)
 
 ### 3. Multi-level model - positivity ###
 
 # Model
-#model1 <- glmer(positive ~ 1 + age + sex + factor(eth_group_imp) + imd_score + prop_students + ch_binary + walkDistAvg + factor(grp_label) + (1|lsoa11), family="binomial", data = lft_persons)
-model1 <- glmer(positive ~ 1 + age + sex + factor(eth_group_imp) + zimd_score + zprop_students + ch_binary + (1|lsoa11), family="binomial", data = lft_persons)
+model1 <- glmer(positive ~ 1 + zage + sex + factor(eth_group_imp) + zimd_score + zprop_students + ch_binary + (1|lsoa11), family="binomial", data = lft_persons)
 summary(model1)
+
+# Print model results as ORs
+cc <- confint(model1,parm="beta_",method="Wald")  ## quick method
+ctab <- cbind(est=fixef(model1),cc)
+exp(ctab)
 
 
 ### 4. Multi-level model - multiple LFTs ###
 
 # Model
-model2 <- glmer(multiple_lfts ~ 1 + age + sex + factor(eth_group_imp) + zimd_score + zprop_students + ch_binary +  zwalkDistAvg + factor(grp_label) + (1|lsoa11), family="binomial", data = lft_persons)
+model2 <- glmer(multiple_lfts ~ 1 + zage + sex + factor(eth_group_imp) + zimd_score + zprop_students + ch_binary +  zwalkDistAvg + factor(grp_label) + (1|lsoa11), family="binomial", data = lft_persons)
 summary(model2)
+
+# Print model results as ORs
+cc2 <- confint(model2,parm="beta_",method="Wald")  ## quick method
+ctab2 <- cbind(est=fixef(model2),cc2)
+exp(ctab2)
