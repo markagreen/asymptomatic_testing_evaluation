@@ -142,7 +142,7 @@ testing[test_result!="insuff", negative:=as.numeric(test_result=="negative")]
 
 with(testing[is.na(test_result)==T], table(TestResultDesc, useNA = "ifany"))
 
-hold <- testing
+#hold <- testing # Save for testing debugging
 testing<-testing[, .(pid= PseudoID,age=Age,t_date,lft,pcr,eth_group, sex=Gender,lsoa11=LLSOA2011, test_result,positive,negative, lad11cd=LowerTierLocalAuthority, symptoms = CovidSymptomatic)]
 
 
@@ -172,7 +172,14 @@ imp_data1<- as.data.table(complete(imputed_Data,1))
 
 imp_data1<-imp_data1[, .(pid,eth_group_imp=eth_group)]
 
+# MG: Just select first record for merging process (this is pretty crap code, I just copied it from another file as was pressed for time, but without it it creates ~20k duplicates in the data which isn't good obviously)
+imp_data1[order(pid), number:=1:.N, by=.(pid)] # Number for each time appear as a record
+imp_data1<-imp_data1[number==1] # Select only first occurrence
+imp_data1 <- imp_data1[,1:2] # Drop number variable
+
+# Merge imputed data with testing data
 testing<-merge(testing, imp_data1, by="pid", all.x=T)
+
 
 with(testing, prop.table(table(eth_group_imp, useNA = "ifany")))
 
