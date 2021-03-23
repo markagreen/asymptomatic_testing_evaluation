@@ -87,6 +87,7 @@ fig1 # Print
 # Save
 ggsave(plot = fig1, filename = "./output/trends_lft_highres.tiff", dpi = 300)
 ggsave(plot = fig1, filename = "./output/trends_lft_lowres.jpeg")
+ggsave(plot = fig1, filename = "./output/trends_lft.svg")
 
 # # If want to create same plot but for LFTs and PCRs together (not in paper)
 # 
