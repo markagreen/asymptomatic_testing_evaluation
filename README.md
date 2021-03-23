@@ -1,5 +1,5 @@
 # Evaluation of asymptomatic testing in Liverpool
-All R analytical code for the following paper ([preprint link](https://www.medrxiv.org/content/10.1101/2021.02.10.21251256v1):
+All R analytical code for the following paper ([preprint link](https://www.medrxiv.org/content/10.1101/2021.02.10.21251256v1)):
 
 **Evaluating social and spatial inequalities of large scale rapid lateral flow SARS-CoV-2 antigen testing in COVID-19 management: An observational study of Liverpool, UK (November 2020 to January 2021)**
 
